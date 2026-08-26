@@ -1,124 +1,187 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
-  Search, 
-  Plus, 
+  Bot, 
+  MapPin, 
   Clock, 
-  ChevronRight
+  LogOut, 
+  Menu,
+  CloudRain,
+  Radio
 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface TopCommandBarProps {
   onOpenCommandPalette: () => void;
+  onOpenMobileSidebar?: () => void;
 }
 
-export const TopCommandBar: React.FC<TopCommandBarProps> = ({ onOpenCommandPalette }) => {
-  const location = useLocation();
-  
-  // Real-time Clock
-  const [currentUtc, setCurrentUtc] = useState<string>('');
-  const [currentLocal, setCurrentLocal] = useState<string>('');
-  const [timezoneName, setTimezoneName] = useState<string>('');
+export const TopCommandBar: React.FC<TopCommandBarProps> = ({ 
+  onOpenMobileSidebar 
+}) => {
+  const { currentUser, logout } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
+  const navigate = useNavigate();
+
+  // Dynamic Asia/Kolkata (IST) Live Clock
+  const [currentDateStr, setCurrentDateStr] = useState<string>('');
+  const [currentTimeStr, setCurrentTimeStr] = useState<string>('');
+  const [timezoneLabel, setTimezoneLabel] = useState<string>('IST');
 
   useEffect(() => {
-    try {
-      setTimezoneName(Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local');
-    } catch {
-      setTimezoneName('Local');
-    }
-
-    const updateClocks = () => {
+    const updateTime = () => {
       const now = new Date();
-      setCurrentUtc(now.toUTCString().slice(17, 25) + ' UTC');
-      setCurrentLocal(now.toLocaleTimeString());
+      try {
+        const dateFormatted = new Intl.DateTimeFormat('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          timeZone: 'Asia/Kolkata',
+        }).format(now);
+
+        const timeFormatted = new Intl.DateTimeFormat('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+          timeZone: 'Asia/Kolkata',
+        }).format(now);
+
+        setCurrentDateStr(dateFormatted);
+        setCurrentTimeStr(timeFormatted);
+        setTimezoneLabel('IST');
+      } catch {
+        setCurrentDateStr(now.toLocaleDateString());
+        setCurrentTimeStr(now.toLocaleTimeString());
+        setTimezoneLabel('IST');
+      }
     };
 
-    updateClocks();
-    const timer = setInterval(updateClocks, 1000);
-    return () => clearInterval(timer);
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
   }, []);
 
-  // Compute Breadcrumb
-  const getBreadcrumb = () => {
-    const path = location.pathname;
-    if (path === '/') return 'Evidence Command Center';
-    if (path === '/submit') return 'Multimodal Ingestion Pipeline';
-    if (path.startsWith('/report/')) return 'Forensic Evidence Dossier';
-    if (path === '/map') return 'Spatial GIS Telemetry';
-    if (path === '/timeline') return 'Proof Chain & Audit Logs';
-    if (path === '/investigations') return 'Active Investigations Queue';
-    if (path === '/reports') return 'Certified Intelligence Reports';
-    if (path === '/settings') return 'System Diagnostics & APIs';
-    if (path === '/login') return 'Investigator Authentication';
-    return 'Investigation Workspace';
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (err) {
+      console.error('Sign out failed:', err);
+    }
   };
 
+  const userEmail = currentUser?.email || 'officer@floodprint.gov.in';
+
   return (
-    <header className="h-14 border-b border-[#21262d] bg-[#0d1117]/90 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between gap-4">
+    <header className="h-16 border-b border-[#e2e8f0] bg-white/95 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between gap-4 shadow-xs">
       
-      {/* Breadcrumb Context */}
-      <div className="flex items-center gap-2 text-xs truncate">
-        <span className="font-mono text-[#6e7681] uppercase hidden sm:inline">FLOODPRINT</span>
-        <ChevronRight className="w-3.5 h-3.5 text-[#30363d] hidden sm:inline" />
-        <span className="font-semibold text-[#f0f6fc] truncate">{getBreadcrumb()}</span>
+      {/* Left: Mobile Nav & Brand Subtitle */}
+      <div className="flex items-center gap-3 text-xs">
+        {onOpenMobileSidebar && (
+          <button
+            onClick={onOpenMobileSidebar}
+            className="lg:hidden p-2 rounded-lg text-[#64748b] hover:text-[#0f172a] hover:bg-[#f1f5f9] border border-transparent transition cursor-pointer"
+            title="Open Navigation Menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+
+        <div className="flex items-center gap-2">
+          <span className="font-mono font-black text-sm tracking-tight text-[#0284c7] flex items-center gap-1.5">
+            <span>💧</span>
+            <span>FLOODPRINT</span>
+          </span>
+          <span className="hidden md:inline-block text-[#94a3b8]">&bull;</span>
+          <span className="hidden md:inline-block text-[11px] font-semibold text-[#64748b] tracking-wide uppercase">
+            {t('brand.subtitle', 'AI Evidence Platform')}
+          </span>
+        </div>
       </div>
 
-      {/* Center Command Search Trigger */}
-      <button
-        onClick={onOpenCommandPalette}
-        className="flex-1 max-w-md hidden md:flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs text-[#8b949e] hover:text-[#f0f6fc] transition shadow-inner"
-      >
-        <div className="flex items-center gap-2">
-          <Search className="w-3.5 h-3.5 text-[#6e7681]" />
-          <span>Search cases, locations, timestamps...</span>
-        </div>
-        <div className="flex items-center gap-1 font-mono text-[10px]">
-          <span className="px-1.5 py-0.2 rounded bg-[#0d1117] border border-[#30363d] text-[#8b949e]">
-            Ctrl
-          </span>
-          <span className="px-1.5 py-0.2 rounded bg-[#0d1117] border border-[#30363d] text-[#8b949e]">
-            K
-          </span>
-        </div>
-      </button>
-
-      {/* Right Telemetry & Actions */}
-      <div className="flex items-center gap-3">
+      {/* Center/Right: Live Telemetry, Language, Weather, Profile */}
+      <div className="flex items-center gap-2 sm:gap-3">
         
-        {/* Real-time System Clocks */}
-        <div className="hidden lg:flex items-center gap-3 px-2.5 py-1 rounded-lg bg-[#161b22] border border-[#21262d] text-[11px] font-mono text-[#8b949e]">
-          <div className="flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-[#00f2fe]" />
-            <span className="text-[#f0f6fc] font-bold">{currentLocal}</span>
-            <span className="text-[#6e7681] text-[10px]">({timezoneName})</span>
-          </div>
-          <span className="text-[#30363d]">&bull;</span>
-          <span className="text-[#8b949e]">{currentUtc}</span>
+        {/* Active Geographic Hub */}
+        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs font-medium text-[#475569]">
+          <span>📍</span>
+          <MapPin className="w-3.5 h-3.5 text-[#0284c7]" />
+          <span>Chittoor, AP, India</span>
         </div>
 
-        {/* Live System Signal Indicator */}
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#161b22] border border-[#21262d] text-[11px] font-mono">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-pulse" />
-          <span className="text-[#8b949e]">Open-Meteo:</span>
-          <span className="text-[#10b981] font-semibold">Active</span>
+        {/* Real-time IST Live Clock */}
+        <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs font-mono text-[#0f172a]">
+          <span>📅</span>
+          <span className="font-bold">{currentDateStr}</span>
+          <span className="text-[#94a3b8]">&bull;</span>
+          <span>🕐</span>
+          <Clock className="w-3.5 h-3.5 text-[#0284c7]" />
+          <span className="text-[#475569] font-medium">{currentTimeStr}</span>
+          <span className="text-[10px] text-[#0284c7] font-bold bg-[#0284c7]/10 px-1.5 py-0.5 rounded border border-[#0284c7]/20 font-mono">
+            {timezoneLabel}
+          </span>
         </div>
 
-        {/* Mobile Search Icon */}
-        <button
-          onClick={onOpenCommandPalette}
-          className="md:hidden p-2 rounded-lg bg-[#161b22] border border-[#30363d] text-[#8b949e] hover:text-[#f0f6fc]"
-          title="Search"
-        >
-          <Search className="w-4 h-4" />
-        </button>
+        {/* Environmental Context Badge */}
+        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs font-medium text-[#475569]">
+          <span>🌧️</span>
+          <CloudRain className="w-3.5 h-3.5 text-[#0284c7]" />
+          <span className="font-mono text-[#0f172a] font-semibold">24 mm/h</span>
+          <span className="text-[#94a3b8]">&bull;</span>
+          <Radio className="w-3 h-3 text-[#10b981] animate-pulse" />
+          <span className="text-[#10b981] font-semibold text-[11px]">Radar Live</span>
+        </div>
 
-        {/* Submit Evidence Quick Button */}
+        {/* Language Selector: EN | తెలుగు | हिन्दी */}
+        <div className="flex items-center rounded-xl bg-[#f1f5f9] p-0.5 border border-[#e2e8f0] text-[11px] font-semibold">
+          <button
+            onClick={() => setLanguage('en')}
+            className={`px-2 py-1 rounded-lg transition cursor-pointer ${language === 'en' ? 'bg-white text-[#0284c7] shadow-xs font-bold' : 'text-[#64748b] hover:text-[#0f172a]'}`}
+            title="English"
+          >
+            EN
+          </button>
+          <button
+            onClick={() => setLanguage('te')}
+            className={`px-2 py-1 rounded-lg transition cursor-pointer ${language === 'te' ? 'bg-white text-[#0284c7] shadow-xs font-bold' : 'text-[#64748b] hover:text-[#0f172a]'}`}
+            title="తెలుగు"
+          >
+            తెలుగు
+          </button>
+          <button
+            onClick={() => setLanguage('hi')}
+            className={`px-2 py-1 rounded-lg transition cursor-pointer ${language === 'hi' ? 'bg-white text-[#0284c7] shadow-xs font-bold' : 'text-[#64748b] hover:text-[#0f172a]'}`}
+            title="हिन्दी"
+          >
+            हिन्दी
+          </button>
+        </div>
+
+        {/* AI Assistant Quick Trigger */}
         <Link
-          to="/submit"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#00f2fe] to-[#0284c7] hover:from-[#38bdf8] hover:to-[#0369a1] text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/10 transition shrink-0"
+          to="/chat"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer"
         >
-          <Plus className="w-3.5 h-3.5" />
-          <span>Ingest Evidence</span>
+          <span>🤖</span>
+          <Bot className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">AI Assistant</span>
         </Link>
+
+        {/* User Profile & Sign Out */}
+        <div className="flex items-center gap-2 pl-1 border-l border-[#e2e8f0]">
+          <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#0284c7] to-[#0369a1] flex items-center justify-center text-white font-bold text-xs shrink-0 font-mono shadow-xs">
+            {userEmail[0].toUpperCase()}
+          </div>
+          <button
+            onClick={handleSignOut}
+            className="p-1.5 rounded-xl hover:bg-[#f1f5f9] text-[#64748b] hover:text-[#e11d48] transition cursor-pointer"
+            title="Sign Out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
 
       </div>
 

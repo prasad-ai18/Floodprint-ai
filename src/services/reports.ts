@@ -55,6 +55,8 @@ export async function createReport(report: FloodReport): Promise<string> {
   }
 }
 
+export const saveReport = createReport;
+
 /**
  * Fetches all reports submitted by a specific user.
  */

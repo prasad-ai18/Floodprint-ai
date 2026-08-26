@@ -1,101 +1,113 @@
 @import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
 
 @layer base {
   :root {
-    --bg-canvas: #090c10;
-    --bg-surface-900: #0d1117;
-    --bg-surface-800: #161b22;
-    --bg-surface-700: #21262d;
-    --border-subtle: #30363d;
-    --border-muted: #21262d;
-    --text-primary: #f0f6fc;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
-    --accent-cyan: #00f2fe;
-    --accent-teal: #0ea5e9;
-    --accent-emerald: #10b981;
-    --accent-amber: #f59e0b;
-    --accent-rose: #f43f5e;
+    --bg-primary: #ffffff;
+    --bg-surface: #f8fafc;
+    --bg-surface-elevated: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --border-subtle: #e2e8f0;
+    --border-default: #cbd5e1;
+    --border-strong: #94a3b8;
+    --brand-primary: #0284c7;
+    --brand-hover: #0369a1;
+    --brand-accent: #06b6d4;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
   }
 
   body {
-    background-color: #07090e;
-    color: #f0f6fc;
+    background-color: #f8fafc;
+    color: #0f172a;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     letter-spacing: -0.01em;
     overflow-x: hidden;
   }
 
-  /* Custom Clean Scrollbars */
+  /* Environmental Topographic & Water Pattern Texture */
+  .bg-environmental-pattern {
+    background-color: #f8fafc;
+    background-image: 
+      radial-gradient(circle at 15% 20%, rgba(2, 132, 199, 0.035) 0%, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(6, 182, 212, 0.035) 0%, transparent 40%),
+      url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30 Q 30 20, 60 30 T 120 30 M0 60 Q 30 50, 60 60 T 120 60 M0 90 Q 30 80, 60 90 T 120 90' fill='none' stroke='%230284c7' stroke-width='0.4' stroke-opacity='0.08'/%3E%3Ccircle cx='30' cy='30' r='0.75' fill='%230284c7' fill-opacity='0.12'/%3E%3Ccircle cx='90' cy='90' r='0.75' fill='%230284c7' fill-opacity='0.12'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+  }
+
+  .bg-topographic-hero {
+    background-color: #ffffff;
+    background-image: 
+      radial-gradient(ellipse at 50% 0%, rgba(2, 132, 199, 0.06) 0%, transparent 70%),
+      url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 25 C 20 15, 40 35, 60 25 C 80 15, 100 35, 120 25 M0 50 C 20 40, 40 60, 60 50 C 80 40, 100 60, 120 50 M0 75 C 20 65, 40 85, 60 75 C 80 65, 100 85, 120 75' fill='none' stroke='%230284c7' stroke-width='0.5' stroke-opacity='0.08'/%3E%3C/svg%3E");
+  }
+
+  /* Clean Professional Scrollbars */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #090c10;
+    background: #f1f5f9;
   }
   ::-webkit-scrollbar-thumb {
-    background: #21262d;
+    background: #cbd5e1;
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #30363d;
+    background: #94a3b8;
   }
 
-  /* Selection highlight */
-  ::selection {
-    background: rgba(14, 165, 233, 0.3);
-    color: #f0f6fc;
+  /* Card elevation and micro-transitions */
+  .card-elevated {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   }
-}
+  .card-elevated:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    border-color: #cbd5e1;
+  }
 
-/* Leaflet Dark Surface Overrides */
-.leaflet-container {
-  background-color: #0d1117 !important;
-  font-family: inherit;
-}
+  /* Micro-animation pulses */
+  @keyframes subtlePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.04); opacity: 0.85; }
+  }
+  .animate-subtle-pulse {
+    animation: subtlePulse 2.5s ease-in-out infinite;
+  }
 
-.leaflet-popup-content-wrapper {
-  background: #0d1117 !important;
-  color: #f0f6fc !important;
-  border: 1px solid #30363d !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8) !important;
-}
+  @keyframes waveRecording {
+    0%, 100% { height: 6px; }
+    50% { height: 18px; }
+  }
+  .animate-wave-bar {
+    animation: waveRecording 0.8s ease-in-out infinite;
+  }
 
-.leaflet-popup-tip {
-  background: #0d1117 !important;
-}
-
-.leaflet-control-zoom a {
-  background-color: #161b22 !important;
-  color: #f0f6fc !important;
-  border-color: #30363d !important;
-}
-
-.leaflet-control-zoom a:hover {
-  background-color: #21262d !important;
-}
-
-.leaflet-control-attribution {
-  background: rgba(13, 17, 23, 0.85) !important;
-  color: #6e7681 !important;
-  font-size: 10px !important;
-}
-
-.leaflet-control-attribution a {
-  color: #8b949e !important;
-}
-
-/* Custom Marker Styling */
-.custom-flood-pin {
-  background: transparent;
-  border: none;
-}
-
-/* Monospace font utility for coordinates & telemetry */
-.font-mono-numbers {
-  font-variant-numeric: tabular-nums;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* Clean Light Leaflet Popups */
+  .leaflet-popup-content-wrapper {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+    padding: 2px !important;
+  }
+  .leaflet-popup-tip {
+    background: #ffffff !important;
+    border-left: 1px solid #cbd5e1 !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+  }
+  .leaflet-popup-content {
+    margin: 8px 12px !important;
+    font-family: inherit !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
 }

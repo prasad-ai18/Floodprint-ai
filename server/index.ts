@@ -5,6 +5,8 @@ import {
   analyzeFloodImage, 
   analyzeVideoSequence, 
   analyzeAudioEvidence, 
+  extractStructuredDocumentIntelligence,
+  chatWithEvidenceAI,
   isGeminiConfigured 
 } from './services/gemini.js';
 import { crossVerifyWeather } from './services/weather.js';
@@ -23,7 +25,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Increase body limit to support base64 audio/video frame sequences
+// Increase body limit to support base64 audio/video frame sequences and documents
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -37,11 +39,13 @@ app.get('/api/health', (_req: Request, res: Response) => {
       cloudinaryConfigured: Boolean(process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET),
       openMeteo: true,
       verificationEngine: true,
+      aiChatbot: true,
+      documentIntelligence: true,
       multimodal: {
         image: true,
         video: true,
         audio: true,
-        metadata: true,
+        document: true,
         location: true,
         temporal: true,
       },
@@ -49,7 +53,41 @@ app.get('/api/health', (_req: Request, res: Response) => {
   });
 });
 
-// Gemini Vision Image Analysis Endpoint
+// 1. Interactive AI Evidence Assistant (Chatbot) Endpoint
+app.post('/api/chat', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { messages, evidenceContext } = req.body;
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      res.status(400).json({ error: 'Array of chat "messages" is required.' });
+      return;
+    }
+
+    const response = await chatWithEvidenceAI(messages, evidenceContext || {});
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// 2. Structured Document & Messy Evidence Extraction Endpoint
+app.post('/api/document/extract', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { rawContent, metadata } = req.body;
+
+    if (!rawContent) {
+      res.status(400).json({ error: 'rawContent (text or document dump) is required.' });
+      return;
+    }
+
+    const extraction = await extractStructuredDocumentIntelligence(rawContent, metadata);
+    res.json(extraction);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// 3. Gemini Vision Image Analysis Endpoint
 app.post('/api/gemini/analyze', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { imageUrl, location, timestamp } = req.body;
@@ -66,7 +104,7 @@ app.post('/api/gemini/analyze', async (req: Request, res: Response, next: NextFu
   }
 });
 
-// Gemini Video Sequence Analysis Endpoint
+// 4. Gemini Video Sequence Analysis Endpoint
 app.post('/api/gemini/analyze-video', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { frames, durationSeconds, location, timestamp } = req.body;
@@ -83,7 +121,7 @@ app.post('/api/gemini/analyze-video', async (req: Request, res: Response, next: 
   }
 });
 
-// Gemini Audio / Voice Transcription & Claim Extraction Endpoint
+// 5. Gemini Audio / Voice Transcription & Claim Extraction Endpoint
 app.post('/api/gemini/analyze-audio', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { audioContent, isTranscriptText, location, timestamp } = req.body;
@@ -100,7 +138,7 @@ app.post('/api/gemini/analyze-audio', async (req: Request, res: Response, next: 
   }
 });
 
-// Historical Weather Verification Endpoint
+// 6. Historical Weather Verification Endpoint
 app.post('/api/weather/verify', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { latitude, longitude, timestamp, address } = req.body;
@@ -117,7 +155,7 @@ app.post('/api/weather/verify', async (req: Request, res: Response, next: NextFu
   }
 });
 
-// Multimodal Verification Synthesis Endpoint
+// 7. Multimodal Verification Synthesis Endpoint
 app.post('/api/verify/synthesize', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { report } = req.body;
@@ -143,5 +181,5 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Floodprint Multimodal Verification API Server running on port ${PORT}`);
+  console.log(`Floodprint AI Evidence Intelligence API Server running on port ${PORT}`);
 });

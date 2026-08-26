@@ -9,6 +9,77 @@ import {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+  referencedLocations?: string[];
+  referencedDates?: string[];
+  keyPoints?: string[];
+  suggestedFollowUps?: string[];
+}
+
+export interface DocumentIntelligenceResult {
+  eventType: string;
+  locations: { name: string; hierarchy?: string; latitude?: number; longitude?: number }[];
+  datesAndTimes: string[];
+  keyFindings: string[];
+  infrastructureImpact: string[];
+  potentialInconsistencies: string[];
+  environmentalReferences: string[];
+  humanSummary: string;
+  confidenceScore: number;
+}
+
+/**
+ * Sends messages and active evidence context to the conversational AI Assistant.
+ */
+export async function sendChatMessage(payload: {
+  messages: { role: 'user' | 'assistant'; content: string }[];
+  evidenceContext?: any;
+}): Promise<{
+  reply: string;
+  referencedLocations: string[];
+  referencedDates: string[];
+  keyPoints: string[];
+  suggestedFollowUps: string[];
+}> {
+  const response = await fetch(`${API_BASE_URL}/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.error || `AI Assistant request failed (${response.statusText})`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Sends raw document text, messy notes, or PDF dumps for structured intelligence extraction.
+ */
+export async function extractDocumentIntelligence(payload: {
+  rawContent: string;
+  metadata?: { fileName?: string; fileType?: string };
+}): Promise<DocumentIntelligenceResult> {
+  const response = await fetch(`${API_BASE_URL}/document/extract`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.error || `Document intelligence extraction failed (${response.statusText})`);
+  }
+
+  return response.json();
+}
+
 /**
  * Sends evidence photo to Gemini Vision API for visual analysis.
  */

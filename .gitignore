@@ -10,7 +10,9 @@ lerna-debug.log*
 # Diagnostic / OS files
 node_modules
 dist
+dist-server
 dist-ssr
+*.tsbuildinfo
 *.local
 .DS_Store
 Thumbs.db
