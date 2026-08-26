@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User profile documents
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Flood evidence reports
+    match /reports/{reportId} {
+      // Allow authenticated user to read their own reports
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid ||
+        request.auth.token.role == 'verifier' ||
+        request.auth.token.role == 'admin'
+      );
+      
+      // Allow authenticated user to create a report strictly bound to their authenticated UID
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.status in ['submitted', 'pending_verification', 'ai_analyzed', 'weather_verified', 'analysis_failed', 'analyzing', 'verified', 'flagged', 'inconclusive'] &&
+        request.resource.data.createdAt != null;
+        
+      // Allow authenticated user to update their own report
+      allow update: if request.auth != null && (
+        resource.data.userId == request.auth.uid ||
+        request.auth.token.role == 'verifier'
+      );
+      
+      // Prevent unauthorized deletion
+      allow delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      
+      // Nested evidence subcollection
+      match /evidence/{evidenceId} {
+        allow read, write: if request.auth != null && 
+          get(/databases/$(database)/documents/reports/$(reportId)).data.userId == request.auth.uid;
+      }
+    }
+  }
+}
