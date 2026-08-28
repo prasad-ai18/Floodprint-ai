@@ -9,6 +9,7 @@ import {
   Settings, 
   ShieldCheck, 
   LogOut,
+  Scan,
   X
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -40,17 +41,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
       emoji: '📊',
     },
     {
+      label: '3D Virtual Assistant',
+      path: '/assistant',
+      icon: Bot,
+      emoji: '🤖',
+      badge: '3D VOICE',
+    },
+    {
+      label: 'Forensic Studio',
+      path: '/analyzer',
+      icon: Scan,
+      emoji: '🔬',
+      badge: 'NEW',
+    },
+    {
       label: t('nav.upload', 'Upload Evidence'),
       path: '/submit',
       icon: UploadCloud,
       emoji: '📤',
-    },
-    {
-      label: t('nav.chat', 'AI Assistant'),
-      path: '/chat',
-      icon: Bot,
-      emoji: '🤖',
-      badge: 'PRO',
     },
     {
       label: t('nav.map', 'GIS Spatial Map'),
@@ -79,7 +87,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
     <aside className="w-full h-full bg-white border-r border-[#e2e8f0] flex flex-col justify-between p-4 select-none font-sans shadow-xs">
       
       {/* Brand Header */}
-      <div className="space-y-6">
+      <div className="space-y-5">
         <div className="flex items-center justify-between px-2 pt-1">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-2xl bg-gradient-to-br from-[#0284c7] to-[#0369a1] text-white shadow-md shadow-sky-500/20">

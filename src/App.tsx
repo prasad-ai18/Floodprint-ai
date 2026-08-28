@@ -8,7 +8,8 @@ import { DashboardPage } from './pages/DashboardPage';
 import { SubmitPage } from './pages/SubmitPage';
 import { ReportDetailPage } from './pages/ReportDetailPage';
 import { MapPage } from './pages/MapPage';
-import { AiChatPage } from './pages/AiChatPage';
+import { VirtualAssistantPage } from './pages/VirtualAssistantPage';
+import { AnalyzerStudioPage } from './pages/AnalyzerStudioPage';
 import { EvidenceLibraryPage } from './pages/EvidenceLibraryPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { AuthPage } from './pages/AuthPage';
@@ -50,18 +51,34 @@ export const App: React.FC = () => {
                 } 
               />
               <Route 
-                path="/chat" 
+                path="/assistant" 
                 element={
                   <ProtectedRoute>
-                    <AiChatPage />
+                    <VirtualAssistantPage />
                   </ProtectedRoute>
                 } 
               />
               <Route 
-                path="/assistant" 
+                path="/chat" 
                 element={
                   <ProtectedRoute>
-                    <AiChatPage />
+                    <VirtualAssistantPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/analyzer" 
+                element={
+                  <ProtectedRoute>
+                    <AnalyzerStudioPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/studio" 
+                element={
+                  <ProtectedRoute>
+                    <AnalyzerStudioPage />
                   </ProtectedRoute>
                 } 
               />
