@@ -1,8 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { MapPin, Navigation, Search, X, Loader2 } from 'lucide-react';
 import { LocationSource } from '../../types';
 import { searchLocations, reverseGeocode, LocationSearchResult, DEFAULT_MAP_LOCATION } from '../../services/gis';
+
+// Fix default leaflet icon paths if fallback is triggered
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+});
+
+export interface MapMarkerItem {
+  id?: string;
+  latitude: number;
+  longitude: number;
+  title?: string;
+  address?: string;
+  score?: number;
+  primaryImageUrl?: string;
+}
 
 interface EvidenceMapProps {
   latitude: number;
@@ -13,6 +32,8 @@ interface EvidenceMapProps {
   onLocationSelect?: (lat: number, lng: number, address?: string) => void;
   height?: string;
   showSearch?: boolean;
+  markers?: MapMarkerItem[];
+  onMarkerClick?: (marker: MapMarkerItem) => void;
 }
 
 export const EvidenceMap: React.FC<EvidenceMapProps> = ({
@@ -24,11 +45,14 @@ export const EvidenceMap: React.FC<EvidenceMapProps> = ({
   onLocationSelect,
   height = '320px',
   showSearch = false,
+  markers = [],
+  onMarkerClick,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.Marker | null>(null);
+  const primaryMarkerRef = useRef<L.Marker | null>(null);
   const circleRef = useRef<L.Circle | null>(null);
+  const extraMarkersLayerRef = useRef<L.LayerGroup | null>(null);
 
   // Search state
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -47,9 +71,64 @@ export const EvidenceMap: React.FC<EvidenceMapProps> = ({
   const centerLng = hasValidCoords ? longitude : DEFAULT_MAP_LOCATION.longitude;
   const zoomLevel = hasValidCoords ? 14 : DEFAULT_MAP_LOCATION.zoom;
 
+  // Custom primary pin icon
+  const createPrimaryIcon = () =>
+    L.divIcon({
+      className: 'custom-flood-pin-primary',
+      html: `
+        <div style="
+          background: radial-gradient(circle, #0284c7 0%, #0369a1 100%);
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          border: 3px solid #ffffff;
+          box-shadow: 0 4px 14px rgba(2, 132, 199, 0.45), 0 2px 4px rgba(0,0,0,0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        ">
+          <div style="width: 8px; height: 8px; background: white; border-radius: 50%;"></div>
+        </div>
+      `,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+    });
+
+  // Custom secondary marker icon for case dossiers
+  const createCaseIcon = (score?: number) => {
+    const isHigh = (score ?? 85) >= 60;
+    const bg = isHigh ? '#10b981' : '#f59e0b';
+    return L.divIcon({
+      className: 'custom-flood-pin-case',
+      html: `
+        <div style="
+          background: ${bg};
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          border: 2.5px solid #ffffff;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 9px;
+          font-weight: bold;
+          font-family: monospace;
+        ">
+          💧
+        </div>
+      `,
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+    });
+  };
+
+  // Initialize Map Once
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
+    // If map already exists on container, clean it first to prevent container initialized errors
     if (mapInstanceRef.current) {
       mapInstanceRef.current.remove();
       mapInstanceRef.current = null;
@@ -62,36 +141,18 @@ export const EvidenceMap: React.FC<EvidenceMapProps> = ({
       attributionControl: true,
     });
 
-    // High-resolution clean light GIS tiles
+    // High-resolution CartoDB Voyager Light GIS tiles
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="https://carto.com/">CARTO</a> &bull; &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
-    const customIcon = L.divIcon({
-      className: 'custom-flood-pin',
-      html: `
-        <div style="
-          background: radial-gradient(circle, #0284c7 0%, #0369a1 100%);
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          border: 3px solid #ffffff;
-          box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4), 0 2px 4px rgba(0,0,0,0.15);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        ">
-          <div style="width: 8px; height: 8px; background: white; border-radius: 50%;"></div>
-        </div>
-      `,
-      iconSize: [28, 28],
-      iconAnchor: [14, 14],
-    });
+    extraMarkersLayerRef.current = L.layerGroup().addTo(map);
 
+    // Primary marker & accuracy circle
     if (hasValidCoords) {
-      const marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(map);
-      markerRef.current = marker;
+      const marker = L.marker([latitude, longitude], { icon: createPrimaryIcon() }).addTo(map);
+      primaryMarkerRef.current = marker;
 
       const popupContent = `
         <div style="padding: 4px; font-family: sans-serif;">
@@ -111,22 +172,23 @@ export const EvidenceMap: React.FC<EvidenceMapProps> = ({
       const circle = L.circle([latitude, longitude], {
         color: '#0284c7',
         fillColor: '#38bdf8',
-        fillOpacity: 0.2,
+        fillOpacity: 0.15,
         radius: 350,
       }).addTo(map);
       circleRef.current = circle;
     }
 
+    // Interactive Map Click Handler
     if (interactive && onLocationSelect) {
       map.on('click', async (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng;
         const roundedLat = Number(lat.toFixed(6));
         const roundedLng = Number(lng.toFixed(6));
 
-        if (markerRef.current) {
-          markerRef.current.setLatLng([lat, lng]);
+        if (primaryMarkerRef.current) {
+          primaryMarkerRef.current.setLatLng([lat, lng]);
         } else {
-          markerRef.current = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+          primaryMarkerRef.current = L.marker([lat, lng], { icon: createPrimaryIcon() }).addTo(map);
         }
 
         if (circleRef.current) {
@@ -135,7 +197,7 @@ export const EvidenceMap: React.FC<EvidenceMapProps> = ({
           circleRef.current = L.circle([lat, lng], {
             color: '#0284c7',
             fillColor: '#38bdf8',
-            fillOpacity: 0.2,
+            fillOpacity: 0.15,
             radius: 350,
           }).addTo(map);
         }
@@ -147,11 +209,100 @@ export const EvidenceMap: React.FC<EvidenceMapProps> = ({
 
     mapInstanceRef.current = map;
 
+    // Trigger invalidateSize after slight delay to ensure container width/height are calibrated
+    const timer = setTimeout(() => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize();
+      }
+    }, 150);
+
     return () => {
-      map.remove();
-      mapInstanceRef.current = null;
+      clearTimeout(timer);
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
     };
-  }, [latitude, longitude, interactive, address, locationSource]);
+  }, []);
+
+  // Update Center & Marker when Coordinates Change dynamically without destroying map
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (hasValidCoords) {
+      map.panTo([latitude, longitude], { animate: true });
+
+      if (primaryMarkerRef.current) {
+        primaryMarkerRef.current.setLatLng([latitude, longitude]);
+        const popupContent = `
+          <div style="padding: 4px; font-family: sans-serif;">
+            <div style="font-size: 11px; font-weight: bold; color: #0284c7; text-transform: uppercase; margin-bottom: 2px;">
+              Evidence Location
+            </div>
+            <div style="font-size: 12px; font-weight: 600; color: #0f172a;">
+              ${address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`}
+            </div>
+            <div style="font-size: 10px; color: #64748b; font-family: monospace; margin-top: 2px;">
+              ${latitude.toFixed(6)}, ${longitude.toFixed(6)} (${locationSource})
+            </div>
+          </div>
+        `;
+        primaryMarkerRef.current.setPopupContent(popupContent);
+      } else {
+        primaryMarkerRef.current = L.marker([latitude, longitude], { icon: createPrimaryIcon() }).addTo(map);
+      }
+
+      if (circleRef.current) {
+        circleRef.current.setLatLng([latitude, longitude]);
+      } else {
+        circleRef.current = L.circle([latitude, longitude], {
+          color: '#0284c7',
+          fillColor: '#38bdf8',
+          fillOpacity: 0.15,
+          radius: 350,
+        }).addTo(map);
+      }
+    }
+
+    map.invalidateSize();
+  }, [latitude, longitude, address, locationSource]);
+
+  // Update Additional Case Markers if provided
+  useEffect(() => {
+    const layer = extraMarkersLayerRef.current;
+    if (!layer) return;
+
+    layer.clearLayers();
+
+    markers.forEach((m) => {
+      if (typeof m.latitude !== 'number' || typeof m.longitude !== 'number') return;
+      if (m.latitude === latitude && m.longitude === longitude) return; // Skip primary
+
+      const marker = L.marker([m.latitude, m.longitude], {
+        icon: createCaseIcon(m.score),
+      });
+
+      const popupHtml = `
+        <div style="padding: 4px; font-family: sans-serif; min-width: 140px;">
+          <div style="font-size: 12px; font-weight: bold; color: #0f172a;">
+            ${m.title || 'Evidence Dossier'}
+          </div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+            ${m.address || `${m.latitude.toFixed(4)}, ${m.longitude.toFixed(4)}`}
+          </div>
+          ${m.score !== undefined ? `<div style="font-size: 10px; font-family: monospace; font-weight: bold; color: #0284c7; margin-top: 4px;">Score: ${m.score}%</div>` : ''}
+        </div>
+      `;
+      marker.bindPopup(popupHtml);
+
+      if (onMarkerClick) {
+        marker.on('click', () => onMarkerClick(m));
+      }
+
+      layer.addLayer(marker);
+    });
+  }, [markers, latitude, longitude, onMarkerClick]);
 
   // Handle Search Execution
   const handleSearchSubmit = async (e: React.FormEvent) => {
@@ -211,7 +362,7 @@ export const EvidenceMap: React.FC<EvidenceMapProps> = ({
               <button
                 type="button"
                 onClick={() => { setSearchQuery(''); setShowResultsDropdown(false); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748b] hover:text-[#0f172a]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748b] hover:text-[#0f172a] cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

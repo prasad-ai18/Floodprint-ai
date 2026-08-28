@@ -8,7 +8,7 @@ import {
   Compass, 
   ChevronRight
 } from 'lucide-react';
-import { EvidenceMap } from '../components/common/EvidenceMap';
+import { EvidenceMap, MapMarkerItem } from '../components/common/EvidenceMap';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getUserReports } from '../services/reports';
@@ -55,6 +55,18 @@ export const MapPage: React.FC = () => {
         !(r.location.latitude === 0 && r.location.longitude === 0)
     );
   }, [reports]);
+
+  const mapMarkers: MapMarkerItem[] = useMemo(() => {
+    return geocodedReports.map(r => ({
+      id: r.id,
+      latitude: r.location.latitude,
+      longitude: r.location.longitude,
+      title: r.title,
+      address: r.location.address,
+      score: r.verification?.confidenceScore,
+      primaryImageUrl: r.primaryImageUrl,
+    }));
+  }, [geocodedReports]);
 
   const handleSelectGisLocation = (loc: LocationSearchResult) => {
     setCurrentLat(loc.latitude);
@@ -155,6 +167,12 @@ export const MapPage: React.FC = () => {
               height="580px"
               showSearch={true}
               interactive={true}
+              markers={mapMarkers}
+              onMarkerClick={(m) => {
+                setCurrentLat(m.latitude);
+                setCurrentLng(m.longitude);
+                if (m.address) setCurrentAddress(m.address);
+              }}
               onLocationSelect={(lat, lng, addr) => {
                 setCurrentLat(lat);
                 setCurrentLng(lng);
