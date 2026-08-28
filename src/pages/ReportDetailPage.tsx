@@ -86,19 +86,19 @@ export const ReportDetailPage: React.FC = () => {
     <div className="space-y-6 pb-20 font-sans max-w-6xl mx-auto">
       
       {/* Top Action & Navigation Strip */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e2e8f0] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#cbd5e1] pb-4">
         <div className="flex items-center gap-2">
           <Link
             to="/library"
-            className="p-2 rounded-xl bg-white hover:bg-[#f1f5f9] text-[#64748b] hover:text-[#0f172a] border border-[#cbd5e1] transition shadow-2xs"
+            className="p-2.5 rounded-2xl btn-3d-secondary transition shadow-2xs"
             title="Back to Evidence Library"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#0284c7] bg-[#0284c7]/10 px-2 py-0.5 rounded border border-[#0284c7]/20">
-                Evidence Dossier
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#0284c7] bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
+                📁 Certified Dossier
               </span>
               <span className="text-xs font-mono text-[#64748b]">ID: {report.id}</span>
             </div>
@@ -111,7 +111,7 @@ export const ReportDetailPage: React.FC = () => {
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleShare}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-[#f1f5f9] text-[#475569] hover:text-[#0f172a] border border-[#cbd5e1] text-xs font-bold transition shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl btn-3d-secondary text-xs font-bold transition shadow-2xs cursor-pointer"
           >
             <Share2 className="w-3.5 h-3.5" />
             <span>{copiedLink ? 'Link Copied!' : 'Share'}</span>
@@ -119,18 +119,19 @@ export const ReportDetailPage: React.FC = () => {
 
           <button
             onClick={handlePrint}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-[#f1f5f9] text-[#475569] hover:text-[#0f172a] border border-[#cbd5e1] text-xs font-bold transition shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl btn-3d-secondary text-xs font-bold transition shadow-2xs cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5" />
             <span>Print Dossier</span>
           </button>
 
           <button
-            onClick={() => navigate('/chat', { state: { reportId: report.id } })}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold transition shadow-md shadow-sky-500/20 cursor-pointer"
+            onClick={() => navigate('/assistant', { state: { reportId: report.id } })}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl btn-3d-pure text-white text-xs font-bold transition shadow-md shadow-sky-500/20 cursor-pointer"
           >
+            <span>🤖</span>
             <Bot className="w-4 h-4" />
-            <span>Ask Floodprint AI</span>
+            <span>Ask 3D AI</span>
           </button>
         </div>
       </div>
@@ -142,9 +143,10 @@ export const ReportDetailPage: React.FC = () => {
         <div className="lg:col-span-4 space-y-5">
           
           {/* Photo Preview Container */}
-          <div className="p-4 rounded-3xl bg-white border border-[#e2e8f0] space-y-3 shadow-sm">
+          <div className="p-5 rounded-3xl bg-white border border-[#cbd5e1] space-y-3 shadow-sm card-3d-pure">
             <div className="flex items-center justify-between text-xs font-mono font-bold text-[#64748b] uppercase">
               <span className="flex items-center gap-1.5">
+                <span>🖼️</span>
                 <Camera className="w-3.5 h-3.5 text-[#0284c7]" />
                 Primary Imagery
               </span>
@@ -159,7 +161,7 @@ export const ReportDetailPage: React.FC = () => {
 
             <div 
               onClick={() => setImageModalOpen(true)}
-              className="relative rounded-2xl overflow-hidden border border-[#cbd5e1] bg-[#f8fafc] cursor-pointer group max-h-64"
+              className="relative rounded-2xl overflow-hidden border border-[#cbd5e1] bg-[#f8fafc] cursor-pointer group max-h-64 shadow-xs"
             >
               <img
                 src={report.primaryImageUrl}
@@ -170,9 +172,10 @@ export const ReportDetailPage: React.FC = () => {
           </div>
 
           {/* Location Telemetry on GIS Map */}
-          <div className="p-4 rounded-3xl bg-white border border-[#e2e8f0] space-y-3 shadow-sm font-mono text-xs">
+          <div className="p-5 rounded-3xl bg-white border border-[#cbd5e1] space-y-3 shadow-sm font-mono text-xs card-3d-pure">
             <div className="flex items-center justify-between text-[#64748b] font-bold uppercase">
               <span className="flex items-center gap-1.5">
+                <span>📍</span>
                 <MapPin className="w-3.5 h-3.5 text-[#0284c7]" />
                 Spatial Location
               </span>
@@ -201,22 +204,23 @@ export const ReportDetailPage: React.FC = () => {
 
           {/* Meteorological Radar Archive Telemetry */}
           {weather && (
-            <div className="p-4 rounded-3xl bg-white border border-[#e2e8f0] space-y-3 shadow-sm font-mono text-xs">
+            <div className="p-5 rounded-3xl bg-white border border-[#cbd5e1] space-y-3 shadow-sm font-mono text-xs card-3d-pure">
               <div className="flex items-center justify-between text-[#64748b] font-bold uppercase">
                 <span className="flex items-center gap-1.5">
+                  <span>🌧️</span>
                   <CloudRain className="w-3.5 h-3.5 text-[#0284c7]" />
                   Weather Radar Telemetry
                 </span>
-                <span className="text-[#10b981] font-bold">Matched</span>
+                <span className="text-[#10b981] font-bold">✅ Matched</span>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
-                  <span className="text-[10px] text-[#64748b] uppercase block">Precipitation</span>
+                  <span className="text-[10px] text-[#64748b] uppercase block font-bold">Precipitation</span>
                   <span className="font-bold text-[#0284c7] text-sm">{weather.precipitation.toFixed(1)} mm/h</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
-                  <span className="text-[10px] text-[#64748b] uppercase block">Temperature</span>
+                  <span className="text-[10px] text-[#64748b] uppercase block font-bold">Temperature</span>
                   <span className="font-bold text-[#d97706] text-sm">{weather.temperature.toFixed(1)}°C</span>
                 </div>
               </div>
@@ -229,20 +233,20 @@ export const ReportDetailPage: React.FC = () => {
         <div className="lg:col-span-8 space-y-5">
           
           {/* Executive Confidence Score Header */}
-          <div className="p-6 rounded-3xl bg-white border border-[#e2e8f0] shadow-sm space-y-4">
+          <div className="p-6 rounded-3xl bg-white border border-[#cbd5e1] shadow-md space-y-4 card-3d-pure">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e2e8f0] pb-4">
               <div>
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#64748b]">
                   Verification Confidence Assessment
                 </span>
-                <div className="text-3xl font-black text-[#0f172a] mt-1">
+                <div className="text-3xl font-black text-[#0f172a] mt-1 font-mono">
                   {confidenceScore} <span className="text-base text-[#64748b] font-normal">/ 100</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-[#ecfdf5] border border-[#a7f3d0] text-[#059669] flex items-center gap-2 font-mono text-xs font-bold">
-                  <CheckCircle2 className="w-4 h-4" />
+                <div className="p-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center gap-2 font-mono text-xs font-bold shadow-2xs">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>{v?.confidenceLevel || 'High Multi-Signal Consistency'}</span>
                 </div>
               </div>
@@ -250,17 +254,18 @@ export const ReportDetailPage: React.FC = () => {
 
             {/* AI Human Summary */}
             <div className="space-y-1.5">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#0284c7]">
-                Human Summary:
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#0284c7] flex items-center gap-1.5">
+                <span>🤖</span>
+                <span>Executive Human Summary:</span>
               </span>
-              <p className="text-xs sm:text-sm text-[#334155] leading-relaxed font-sans">
+              <p className="text-xs sm:text-sm text-[#334155] leading-relaxed font-sans font-medium">
                 {v?.explanation || ai?.visualSummary || report.description}
               </p>
             </div>
           </div>
 
           {/* Key Findings & Extracted Observations */}
-          <div className="p-6 rounded-3xl bg-white border border-[#e2e8f0] shadow-sm space-y-4">
+          <div className="p-6 rounded-3xl bg-white border border-[#cbd5e1] shadow-md space-y-4 card-3d-pure">
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[#0f172a] flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-[#0284c7]" />
               Multi-Signal Evidence Corroboration
@@ -268,8 +273,9 @@ export const ReportDetailPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div className="p-4 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] space-y-2">
-                <span className="font-mono font-bold text-[#0284c7] uppercase block">
-                  Gemini Vision Analysis
+                <span className="font-mono font-bold text-[#0284c7] uppercase block flex items-center gap-1">
+                  <span>✨</span>
+                  <span>Gemini Vision Analysis</span>
                 </span>
                 <ul className="space-y-1.5 text-[#475569]">
                   {(ai?.floodEvidence.observations || ['Water accumulation detected along roadway']).map((obs, i) => (
@@ -282,8 +288,9 @@ export const ReportDetailPage: React.FC = () => {
               </div>
 
               <div className="p-4 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] space-y-2">
-                <span className="font-mono font-bold text-[#10b981] uppercase block">
-                  Sensor &amp; Environmental Corroboration
+                <span className="font-mono font-bold text-[#10b981] uppercase block flex items-center gap-1">
+                  <span>🛰️</span>
+                  <span>Sensor &amp; Environmental Corroboration</span>
                 </span>
                 <ul className="space-y-1.5 text-[#475569]">
                   <li className="flex items-start gap-1.5">
@@ -305,9 +312,10 @@ export const ReportDetailPage: React.FC = () => {
 
           {/* Submitter Narrative / Notes */}
           {report.description && (
-            <div className="p-6 rounded-3xl bg-white border border-[#e2e8f0] shadow-sm space-y-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#64748b]">
-                Submitter Field Narrative:
+            <div className="p-6 rounded-3xl bg-white border border-[#cbd5e1] shadow-md space-y-2 card-3d-pure">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#64748b] flex items-center gap-1">
+                <span>📝</span>
+                <span>Submitter Field Narrative:</span>
               </span>
               <p className="text-xs text-[#475569] leading-relaxed whitespace-pre-wrap font-mono">
                 {report.description}

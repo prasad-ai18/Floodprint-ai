@@ -305,16 +305,16 @@ export const SubmitPage: React.FC = () => {
       </div>
 
       {isSubmitting ? (
-        <div className="p-12 rounded-3xl bg-white border border-[#e2e8f0] text-center space-y-4 shadow-sm">
+        <div className="p-12 rounded-3xl bg-white border border-[#cbd5e1] text-center space-y-4 shadow-xl card-3d-pure">
           <Loader2 className="w-10 h-10 animate-spin text-[#0284c7] mx-auto" />
-          <h3 className="text-base font-bold text-[#0f172a]">Synthesizing Multimodal Evidence</h3>
+          <h3 className="text-base font-bold text-[#0f172a] font-mono">Synthesizing Multimodal Evidence</h3>
           <p className="text-xs text-[#64748b] font-mono">{submissionStep}</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
           
           {/* STEP 1: MULTIMODAL MEDIA UPLOAD ZONE */}
-          <div className="p-6 rounded-3xl bg-white border border-[#e2e8f0] space-y-4 shadow-sm">
+          <div className="p-6 rounded-3xl bg-white border border-[#cbd5e1] space-y-4 shadow-md card-3d-pure">
             
             {/* Tabs */}
             <div className="flex items-center gap-2 border-b border-[#e2e8f0] pb-3 flex-wrap">
@@ -629,7 +629,7 @@ export const SubmitPage: React.FC = () => {
           </div>
 
           {/* STEP 2: REAL LOCATION & INTERACTIVE GIS MAP */}
-          <div className="p-6 rounded-3xl bg-white border border-[#e2e8f0] space-y-4 shadow-sm">
+          <div className="p-6 rounded-3xl bg-white border border-[#cbd5e1] space-y-4 shadow-md card-3d-pure">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e2e8f0] pb-3">
               <div>
                 <label className="text-xs font-bold uppercase tracking-wider text-[#0f172a] font-mono flex items-center gap-1.5">
@@ -646,10 +646,10 @@ export const SubmitPage: React.FC = () => {
                 type="button"
                 onClick={handleGetLocation}
                 disabled={locating}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f8fafc] hover:bg-[#f1f5f9] text-[#0284c7] border border-[#cbd5e1] text-xs font-bold transition disabled:opacity-50 font-mono cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg btn-3d-secondary text-[#0284c7] text-xs font-bold transition disabled:opacity-50 font-mono cursor-pointer"
               >
                 {locating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <LocateFixed className="w-3.5 h-3.5" />}
-                {locating ? 'Locating...' : 'Browser GPS'}
+                <span>{locating ? 'Locating...' : 'Browser GPS'}</span>
               </button>
             </div>
 
@@ -723,14 +723,14 @@ export const SubmitPage: React.FC = () => {
           </div>
 
           {/* STEP 3: REAL TIME & CLOCK LAYER */}
-          <div className="p-6 rounded-3xl bg-white border border-[#e2e8f0] space-y-3 shadow-sm">
+          <div className="p-6 rounded-3xl bg-white border border-[#cbd5e1] space-y-3 shadow-md card-3d-pure">
             <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-2.5">
               <label className="text-xs font-bold uppercase tracking-wider text-[#0f172a] font-mono flex items-center gap-1.5">
                 <span>📅</span>
                 <Clock className="w-3.5 h-3.5 text-[#0284c7]" />
                 Temporal Alignment &amp; Clock Delta
               </label>
-              <span className="text-[10px] font-mono text-[#0284c7] bg-[#0284c7]/10 px-2 py-0.5 rounded border border-[#0284c7]/20 font-bold">
+              <span className="text-[10px] font-mono text-[#0284c7] bg-sky-50 px-2 py-0.5 rounded border border-sky-200 font-bold">
                 TZ: {localTimezone}
               </span>
             </div>
@@ -759,7 +759,7 @@ export const SubmitPage: React.FC = () => {
           </div>
 
           {/* STEP 4: CLAIM NARRATIVE */}
-          <div className="p-6 rounded-3xl bg-white border border-[#e2e8f0] space-y-3 shadow-sm">
+          <div className="p-6 rounded-3xl bg-white border border-[#cbd5e1] space-y-3 shadow-md card-3d-pure">
             <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-2.5">
               <label className="text-xs font-bold uppercase tracking-wider text-[#0f172a] font-mono flex items-center gap-1.5">
                 <span>📝</span>
@@ -804,14 +804,14 @@ export const SubmitPage: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="px-4 py-2.5 rounded-xl bg-white hover:bg-[#f1f5f9] text-xs font-semibold text-[#64748b] hover:text-[#0f172a] border border-[#cbd5e1] transition cursor-pointer"
+              className="px-5 py-2.5 rounded-2xl btn-3d-secondary text-xs font-bold text-[#64748b] hover:text-[#0f172a] cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] disabled:opacity-50 text-white font-bold text-xs shadow-md shadow-sky-500/20 transition cursor-pointer active:scale-95"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-2xl btn-3d-pure disabled:opacity-50 text-white font-bold text-xs shadow-xl shadow-sky-500/30 transition cursor-pointer active:scale-95"
             >
               <span>✅</span>
               <ShieldCheck className="w-4 h-4" />

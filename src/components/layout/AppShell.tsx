@@ -22,7 +22,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   }
 
   return (
-    <div className="relative flex h-screen w-screen overflow-hidden bg-environmental-pattern text-[#0f172a] font-sans antialiased">
+    <div className="relative flex h-screen w-screen overflow-hidden bg-pure-3d text-[#0f172a] font-sans antialiased">
       
       {/* 3D Ambient Fluid & Atmospheric Droplet Canvas */}
       <RealisticWaterCanvas />
@@ -61,20 +61,20 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
       </div>
 
-      {/* Floating 3D 🤖 FLOODPRINT AI Trigger on All Views (except /chat) */}
-      {location.pathname !== '/chat' && (
+      {/* Floating 3D 🤖 FLOODPRINT AI Trigger on All Views (except /assistant) */}
+      {location.pathname !== '/assistant' && location.pathname !== '/chat' && (
         <div className="fixed bottom-6 right-6 z-40">
           <Link
-            to="/chat"
-            className="group flex items-center gap-2.5 px-4 py-3 rounded-2xl btn-3d-primary text-white shadow-xl shadow-sky-500/30 hover:shadow-sky-500/50 transition-all duration-200 active:scale-95 border border-white/30"
-            title="Open Floodprint AI Assistant"
+            to="/assistant"
+            className="group flex items-center gap-2.5 px-4 py-3 rounded-2xl btn-3d-pure text-white shadow-2xl shadow-sky-500/40 hover:shadow-sky-500/60 transition-all duration-200 active:scale-95 border border-white/40"
+            title="Open 3D Virtual Assistant"
           >
             <div className="relative">
               <Bot className="w-5 h-5 group-hover:rotate-6 transition-transform" />
               <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#0284c7] animate-pulse" />
             </div>
             <span className="text-xs font-bold font-mono tracking-wide flex items-center gap-1.5">
-              <span>🤖 FLOODPRINT AI</span>
+              <span>🤖 3D VIRTUAL ASSISTANT</span>
               <Sparkles className="w-3.5 h-3.5 text-sky-200" />
             </span>
           </Link>

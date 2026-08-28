@@ -6,7 +6,7 @@
     --bg-surface: #f8fafc;
     --bg-surface-elevated: #f1f5f9;
     --text-primary: #0f172a;
-    --text-secondary: #475569;
+    --text-secondary: #334155;
     --text-muted: #64748b;
     --border-subtle: #e2e8f0;
     --border-default: #cbd5e1;
@@ -20,105 +20,137 @@
   }
 
   body {
-    background-color: #f8fafc;
+    background-color: #f1f5f9;
     color: #0f172a;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
     overflow-x: hidden;
   }
 
-  /* 3D Realistic Environmental Pattern Texture */
-  .bg-environmental-pattern {
-    background-color: #f8fafc;
+  /* 3D Atmospheric Background Layer */
+  .bg-pure-3d {
+    background-color: #f1f5f9;
     background-image: 
-      radial-gradient(circle at 20% 15%, rgba(2, 132, 199, 0.04) 0%, transparent 45%),
-      radial-gradient(circle at 80% 85%, rgba(6, 182, 212, 0.04) 0%, transparent 45%),
-      url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30 Q 30 20, 60 30 T 120 30 M0 60 Q 30 50, 60 60 T 120 60 M0 90 Q 30 80, 60 90 T 120 90' fill='none' stroke='%230284c7' stroke-width='0.4' stroke-opacity='0.08'/%3E%3Ccircle cx='30' cy='30' r='0.75' fill='%230284c7' fill-opacity='0.12'/%3E%3Ccircle cx='90' cy='90' r='0.75' fill='%230284c7' fill-opacity='0.12'/%3E%3C/svg%3E");
+      radial-gradient(circle at 15% 10%, rgba(2, 132, 199, 0.07) 0%, transparent 45%),
+      radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 50% 85%, rgba(14, 165, 233, 0.05) 0%, transparent 55%),
+      linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
     background-attachment: fixed;
   }
 
-  .bg-topographic-hero {
-    background-color: #ffffff;
-    background-image: 
-      radial-gradient(ellipse at 50% 0%, rgba(2, 132, 199, 0.08) 0%, transparent 75%),
-      url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 25 C 20 15, 40 35, 60 25 C 80 15, 100 35, 120 25 M0 50 C 20 40, 40 60, 60 50 C 80 40, 100 60, 120 50 M0 75 C 20 65, 40 85, 60 75 C 80 65, 100 85, 120 75' fill='none' stroke='%230284c7' stroke-width='0.5' stroke-opacity='0.08'/%3E%3C/svg%3E");
+  .bg-3d-hero {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 249, 255, 0.9) 100%);
+    box-shadow: 
+      0 20px 40px -15px rgba(2, 132, 199, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 1) inset,
+      0 1px 3px 0 rgba(0, 0, 0, 0.05);
   }
 
-  /* 3D Realistic Depth Cards */
-  .card-3d-realistic {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+  /* Pure 3D Elevated Glass Cards */
+  .card-3d-pure {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(226, 232, 240, 0.85);
     border-radius: 1.5rem;
     box-shadow: 
-      0 10px 25px -5px rgba(2, 132, 199, 0.08),
-      0 8px 10px -6px rgba(0, 0, 0, 0.04),
-      0 0 0 1px rgba(255, 255, 255, 0.9) inset;
-    transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+      0 12px 28px -6px rgba(2, 132, 199, 0.09),
+      0 6px 12px -4px rgba(15, 23, 42, 0.04),
+      0 0 0 1px rgba(255, 255, 255, 0.95) inset;
+    transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
   }
 
-  .card-3d-realistic:hover {
-    transform: translateY(-3px);
+  .card-3d-pure:hover {
+    transform: translateY(-4px) scale(1.003);
     box-shadow: 
-      0 20px 35px -8px rgba(2, 132, 199, 0.14),
-      0 12px 14px -6px rgba(0, 0, 0, 0.06),
+      0 24px 44px -10px rgba(2, 132, 199, 0.18),
+      0 12px 18px -6px rgba(15, 23, 42, 0.06),
       0 0 0 1px rgba(255, 255, 255, 1) inset;
     border-color: #cbd5e1;
   }
 
-  /* 3D Tactile Buttons */
-  .btn-3d-primary {
+  /* 3D Embossed Tactile Buttons */
+  .btn-3d-pure {
     background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 
-      0 4px 12px rgba(2, 132, 199, 0.35),
-      0 1px 0 rgba(255, 255, 255, 0.25) inset,
-      0 -2px 0 rgba(0, 0, 0, 0.15) inset;
-    transition: all 0.15s ease;
+      0 6px 18px rgba(2, 132, 199, 0.35),
+      0 1px 0 rgba(255, 255, 255, 0.4) inset,
+      0 -2px 0 rgba(0, 0, 0, 0.2) inset;
+    transition: all 0.18s cubic-bezier(0.2, 0, 0.2, 1);
   }
-  .btn-3d-primary:hover {
+  .btn-3d-pure:hover {
     background: linear-gradient(180deg, #0369a1 0%, #075985 100%);
     box-shadow: 
-      0 6px 16px rgba(2, 132, 199, 0.45),
-      0 1px 0 rgba(255, 255, 255, 0.3) inset;
-    transform: translateY(-1px);
+      0 8px 24px rgba(2, 132, 199, 0.45),
+      0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    transform: translateY(-2px);
   }
-  .btn-3d-primary:active {
+  .btn-3d-pure:active {
     transform: translateY(1px);
     box-shadow: 
-      0 2px 4px rgba(2, 132, 199, 0.2),
-      0 2px 4px rgba(0, 0, 0, 0.2) inset;
+      0 2px 6px rgba(2, 132, 199, 0.25),
+      0 2px 4px rgba(0, 0, 0, 0.25) inset;
   }
 
-  /* Clean Professional Scrollbars */
+  /* 3D Secondary Button */
+  .btn-3d-secondary {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    box-shadow: 
+      0 3px 10px rgba(0, 0, 0, 0.04),
+      0 1px 0 rgba(255, 255, 255, 1) inset;
+    transition: all 0.18s cubic-bezier(0.2, 0, 0.2, 1);
+  }
+  .btn-3d-secondary:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+  }
+  .btn-3d-secondary:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset;
+  }
+
+  /* 3D Floating Badge */
+  .badge-3d {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+    border: 1px solid rgba(2, 132, 199, 0.25);
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.1);
+  }
+
+  /* Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
   }
   ::-webkit-scrollbar-track {
     background: #f1f5f9;
   }
   ::-webkit-scrollbar-thumb {
     background: #cbd5e1;
-    border-radius: 3px;
+    border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 
-  /* Micro-animation pulses */
-  @keyframes subtlePulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.04); opacity: 0.85; }
+  /* Keyframe Animations */
+  @keyframes float3D {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(0.5deg); }
   }
-  .animate-subtle-pulse {
-    animation: subtlePulse 2.5s ease-in-out infinite;
+  .animate-float-3d {
+    animation: float3D 4s ease-in-out infinite;
   }
 
-  @keyframes waveRecording {
+  @keyframes wavePulse {
     0%, 100% { height: 6px; }
-    50% { height: 18px; }
+    50% { height: 20px; }
   }
   .animate-wave-bar {
-    animation: waveRecording 0.8s ease-in-out infinite;
+    animation: wavePulse 0.75s ease-in-out infinite;
   }
 
   /* Clean Light Leaflet Popups */
@@ -126,8 +158,8 @@
     background: #ffffff !important;
     color: #0f172a !important;
     border: 1px solid #cbd5e1 !important;
-    border-radius: 12px !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 16px 32px -6px rgba(2, 132, 199, 0.18) !important;
     padding: 2px !important;
   }
   .leaflet-popup-tip {

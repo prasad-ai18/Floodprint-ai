@@ -9,7 +9,8 @@ import {
   ArrowUpRight,
   FileText,
   Send,
-  Boxes
+  Boxes,
+  Scan
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -50,30 +51,30 @@ export const DashboardPage: React.FC = () => {
   const handleAskAi = (e: React.FormEvent) => {
     e.preventDefault();
     if (!promptInput.trim()) return;
-    navigate('/chat', { state: { initialPrompt: promptInput.trim() } });
+    navigate('/assistant', { state: { initialPrompt: promptInput.trim() } });
   };
 
   const handleQuickQuestion = (query: string) => {
-    navigate('/chat', { state: { initialPrompt: query } });
+    navigate('/assistant', { state: { initialPrompt: query } });
   };
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16 font-sans">
       
       {/* 1. HERO SECTION WITH 3D SPATIAL TERRAIN SIMULATOR */}
-      <div className="bg-topographic-hero p-6 sm:p-8 rounded-3xl border border-[#cbd5e1] shadow-lg relative overflow-hidden">
+      <div className="bg-3d-hero p-6 sm:p-8 rounded-3xl border border-[#cbd5e1] shadow-xl relative overflow-hidden">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           
-          <div className="space-y-3 max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0284c7]/10 border border-[#0284c7]/20 text-[#0284c7] text-xs font-mono font-bold uppercase tracking-wider">
+          <div className="space-y-3.5 max-w-xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-3d text-[#0284c7] text-xs font-mono font-bold uppercase tracking-wider">
               <span>💧</span>
-              <span>FLOODPRINT 3D AI PLATFORM</span>
+              <span>FLOODPRINT PURE 3D PLATFORM</span>
               <span>&bull;</span>
               <span>ANDHRA PRADESH</span>
             </div>
             
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0f172a] tracking-tight leading-tight">
-              Turn messy environmental evidence into clear, verifiable intelligence.
+              Turn messy environmental evidence into clear, verifiable 3D intelligence.
             </h1>
             
             <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
@@ -83,7 +84,7 @@ export const DashboardPage: React.FC = () => {
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Link
                 to="/submit"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl btn-3d-primary text-white text-xs font-bold shadow-md shadow-sky-500/25 transition cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl btn-3d-pure text-white text-xs font-bold shadow-lg shadow-sky-500/25 transition cursor-pointer"
               >
                 <span>📤</span>
                 <UploadCloud className="w-4 h-4" />
@@ -91,12 +92,21 @@ export const DashboardPage: React.FC = () => {
               </Link>
 
               <Link
-                to="/chat"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-[#f8fafc] text-[#0284c7] border border-[#cbd5e1] text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
+                to="/assistant"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl btn-3d-secondary text-[#0284c7] text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
               >
                 <span>🤖</span>
                 <Bot className="w-4 h-4" />
-                <span>Ask Floodprint AI</span>
+                <span>3D Virtual Assistant</span>
+              </Link>
+
+              <Link
+                to="/analyzer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl btn-3d-secondary text-[#334155] text-xs font-bold transition shadow-xs cursor-pointer"
+              >
+                <span>🔬</span>
+                <Scan className="w-4 h-4 text-[#0284c7]" />
+                <span>Forensic Studio</span>
               </Link>
             </div>
           </div>
@@ -104,11 +114,12 @@ export const DashboardPage: React.FC = () => {
           {/* Interactive 3D Terrain Mini Preview Widget */}
           <div className="w-full lg:w-[420px] shrink-0">
             <div className="flex items-center justify-between px-2 pb-2 text-xs font-mono font-bold text-[#64748b]">
-              <span className="flex items-center gap-1 text-[#0284c7]">
+              <span className="flex items-center gap-1.5 text-[#0284c7]">
+                <span>🌊</span>
                 <Boxes className="w-3.5 h-3.5" />
                 3D Digital Elevation Model (DEM)
               </span>
-              <span className="text-[10px] text-[#10b981]">Drag to Rotate &bull; 60 FPS</span>
+              <span className="text-[10px] text-[#10b981] font-bold">✨ Interactive Orbit</span>
             </div>
             <RealisticTerrainViewer 
               locationName="Chittoor River Basin (3D DEM)" 
@@ -121,18 +132,18 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. PROMINENT AI PROMPT COMMAND BOX */}
-      <div className="p-5 rounded-3xl bg-white border border-[#cbd5e1] shadow-sm space-y-3 card-3d-realistic">
+      {/* 2. PROMINENT 3D AI PROMPT COMMAND BOX */}
+      <div className="p-5 rounded-3xl bg-white border border-[#cbd5e1] shadow-sm space-y-3 card-3d-pure">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span>🤖</span>
+            <span className="text-base">🤖</span>
             <Sparkles className="w-4 h-4 text-[#0284c7]" />
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[#0f172a]">
-              Ask Floodprint AI Anything About Collected Evidence
+              Ask 3D Virtual Assistant Anything About Ingested Evidence
             </h2>
           </div>
-          <span className="text-[11px] font-mono text-[#0284c7] font-bold">
-            ✨ Gemini 1.5 Flash Connected
+          <span className="text-[11px] font-mono text-[#0284c7] font-bold badge-3d px-2 py-0.5 rounded-full">
+            ✨ Voice Enabled
           </span>
         </div>
 
@@ -142,21 +153,21 @@ export const DashboardPage: React.FC = () => {
             value={promptInput}
             onChange={(e) => setPromptInput(e.target.value)}
             placeholder="e.g. How many flood events were verified in Chittoor this week? Or cross-check radar with photo evidence..."
-            className="w-full pl-4 pr-24 py-3 rounded-2xl bg-[#f8fafc] border border-[#cbd5e1] text-xs text-[#0f172a] placeholder-[#94a3b8] focus:outline-none focus:border-[#0284c7] shadow-inner transition font-sans"
+            className="w-full pl-4 pr-28 py-3 rounded-2xl bg-[#f8fafc] border border-[#cbd5e1] text-xs text-[#0f172a] placeholder-[#94a3b8] focus:outline-none focus:border-[#0284c7] shadow-inner transition font-sans"
           />
           <button
             type="submit"
             disabled={!promptInput.trim()}
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl btn-3d-primary disabled:opacity-40 text-white text-xs font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl btn-3d-pure disabled:opacity-40 text-white text-xs font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer"
           >
-            <span>Ask</span>
+            <span>Ask 3D AI</span>
             <Send className="w-3 h-3" />
           </button>
         </form>
 
         {/* Suggested Quick Investigation Questions */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 text-[11px] text-[#475569]">
-          <span className="font-mono text-[#94a3b8] shrink-0 font-bold">Suggested:</span>
+          <span className="font-mono text-[#94a3b8] shrink-0 font-bold">Quick Inquiries:</span>
           {[
             '🔍 How many flood events in Chittoor?',
             '🌧️ Compare radar rain with photo timestamps',
@@ -167,7 +178,7 @@ export const DashboardPage: React.FC = () => {
               key={idx}
               type="button"
               onClick={() => handleQuickQuestion(q)}
-              className="px-3 py-1 rounded-xl bg-[#f8fafc] hover:bg-[#f1f5f9] border border-[#e2e8f0] text-[#334155] hover:text-[#0284c7] shrink-0 transition cursor-pointer font-medium"
+              className="px-3 py-1 rounded-xl bg-[#f8fafc] hover:bg-[#f1f5f9] border border-[#cbd5e1] text-[#334155] hover:text-[#0284c7] shrink-0 transition cursor-pointer font-medium"
             >
               {q}
             </button>
@@ -175,13 +186,13 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. FOUR 3D INTERACTIVE TILT METRIC CARDS */}
+      {/* 3. FOUR PURE 3D INTERACTIVE TILT METRIC CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        <InteractiveTiltCard className="p-5 rounded-3xl bg-white border border-[#e2e8f0] shadow-sm space-y-1.5 card-3d-realistic">
+        <InteractiveTiltCard className="p-5 rounded-3xl bg-white border border-[#cbd5e1] shadow-sm space-y-1.5 card-3d-pure">
           <div className="flex items-center justify-between text-[#64748b]">
             <span className="text-xs font-mono font-bold uppercase tracking-wider">Total Evidence</span>
-            <span className="text-base">📁</span>
+            <span className="text-xl">📁</span>
           </div>
           <div className="text-2xl font-black text-[#0f172a] font-mono">
             {reports.length}
@@ -191,10 +202,10 @@ export const DashboardPage: React.FC = () => {
           </div>
         </InteractiveTiltCard>
 
-        <InteractiveTiltCard className="p-5 rounded-3xl bg-white border border-[#e2e8f0] shadow-sm space-y-1.5 card-3d-realistic">
+        <InteractiveTiltCard className="p-5 rounded-3xl bg-white border border-[#cbd5e1] shadow-sm space-y-1.5 card-3d-pure">
           <div className="flex items-center justify-between text-[#64748b]">
             <span className="text-xs font-mono font-bold uppercase tracking-wider">Multi-Signal Verified</span>
-            <span className="text-base">✅</span>
+            <span className="text-xl">✅</span>
           </div>
           <div className="text-2xl font-black text-[#10b981] font-mono">
             {verifiedCount}
@@ -204,10 +215,10 @@ export const DashboardPage: React.FC = () => {
           </div>
         </InteractiveTiltCard>
 
-        <InteractiveTiltCard className="p-5 rounded-3xl bg-white border border-[#e2e8f0] shadow-sm space-y-1.5 card-3d-realistic">
+        <InteractiveTiltCard className="p-5 rounded-3xl bg-white border border-[#cbd5e1] shadow-sm space-y-1.5 card-3d-pure">
           <div className="flex items-center justify-between text-[#64748b]">
             <span className="text-xs font-mono font-bold uppercase tracking-wider">Average Synthesis</span>
-            <span className="text-base">⚡</span>
+            <span className="text-xl">⚡</span>
           </div>
           <div className="text-2xl font-black text-[#0284c7] font-mono">
             1.4s
@@ -217,10 +228,10 @@ export const DashboardPage: React.FC = () => {
           </div>
         </InteractiveTiltCard>
 
-        <InteractiveTiltCard className="p-5 rounded-3xl bg-white border border-[#e2e8f0] shadow-sm space-y-1.5 card-3d-realistic">
+        <InteractiveTiltCard className="p-5 rounded-3xl bg-white border border-[#cbd5e1] shadow-sm space-y-1.5 card-3d-pure">
           <div className="flex items-center justify-between text-[#64748b]">
             <span className="text-xs font-mono font-bold uppercase tracking-wider">Radar Precision</span>
-            <span className="text-base">🌧️</span>
+            <span className="text-xl">🌧️</span>
           </div>
           <div className="text-2xl font-black text-[#0284c7] font-mono">
             99.2%
@@ -236,10 +247,10 @@ export const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Recent Ingested Evidence Dossiers (7 cols) */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-white border border-[#cbd5e1] space-y-4 shadow-sm card-3d-realistic">
+        <div className="lg:col-span-7 p-6 rounded-3xl bg-white border border-[#cbd5e1] space-y-4 shadow-sm card-3d-pure">
           <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-3">
             <div className="flex items-center gap-2">
-              <span>📋</span>
+              <span className="text-base">📋</span>
               <FileText className="w-4 h-4 text-[#0284c7]" />
               <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[#0f172a]">
                 Recent Ingested Evidence Dossiers
@@ -267,7 +278,7 @@ export const DashboardPage: React.FC = () => {
               </p>
               <Link
                 to="/submit"
-                className="inline-block mt-2 px-4 py-2 rounded-xl btn-3d-primary text-white font-bold text-xs shadow-sm cursor-pointer"
+                className="inline-block mt-2 px-4 py-2 rounded-2xl btn-3d-pure text-white font-bold text-xs shadow-sm cursor-pointer"
               >
                 + Upload Evidence
               </Link>
@@ -288,7 +299,7 @@ export const DashboardPage: React.FC = () => {
                       <img
                         src={report.primaryImageUrl}
                         alt={report.title}
-                        className="w-14 h-14 rounded-xl object-cover border border-[#cbd5e1] shrink-0 bg-white"
+                        className="w-14 h-14 rounded-2xl object-cover border border-[#cbd5e1] shrink-0 bg-white shadow-xs"
                       />
                       <div className="truncate">
                         <div className="text-xs font-bold text-[#0f172a] group-hover:text-[#0284c7] transition truncate font-sans">
@@ -302,7 +313,7 @@ export const DashboardPage: React.FC = () => {
                           <span className="text-[#64748b]">
                             {new Date(report.createdAt).toLocaleDateString()}
                           </span>
-                          <span className="text-[#94a3b8]">&bull;</span>
+                          <span className="text-[#cbd5e1]">&bull;</span>
                           <span className={isVerified ? 'text-[#10b981] font-bold' : 'text-[#d97706] font-bold'}>
                             {isVerified ? '✅ VERIFIED' : '⚠️ REVIEW'}
                           </span>
@@ -334,10 +345,10 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Spatial Intelligence: 3D Topography vs 2D GIS Map (5 cols) */}
-        <div className="lg:col-span-5 p-6 rounded-3xl bg-white border border-[#cbd5e1] space-y-4 shadow-sm card-3d-realistic">
+        <div className="lg:col-span-5 p-6 rounded-3xl bg-white border border-[#cbd5e1] space-y-4 shadow-sm card-3d-pure">
           <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-3">
             <div className="flex items-center gap-2">
-              <span>🗺️</span>
+              <span className="text-base">🗺️</span>
               <MapPin className="w-4 h-4 text-[#0284c7]" />
               <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[#0f172a]">
                 Spatial View (Chittoor, AP)
@@ -394,7 +405,7 @@ export const DashboardPage: React.FC = () => {
           <div className="flex items-center justify-between text-xs font-mono text-[#64748b] pt-1">
             <span>Coordinates: 13.2172° N, 79.1003° E</span>
             <span className="text-[#10b981] font-bold">
-              {viewMode === '3d_dem' ? 'Three.js WebGL 3D' : 'CartoDB Voyager'}
+              {viewMode === '3d_dem' ? '✨ Three.js WebGL 3D' : '🗺️ CartoDB Voyager'}
             </span>
           </div>
         </div>
