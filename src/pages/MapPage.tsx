@@ -6,9 +6,11 @@ import {
   Bot, 
   Plus, 
   Compass, 
-  ChevronRight
+  ChevronRight,
+  Boxes
 } from 'lucide-react';
 import { EvidenceMap, MapMarkerItem } from '../components/common/EvidenceMap';
+import { RealisticTerrainViewer } from '../components/3d/RealisticTerrainViewer';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getUserReports } from '../services/reports';
@@ -25,6 +27,7 @@ export const MapPage: React.FC = () => {
 
   const [reports, setReports] = useState<FloodReport[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [mapMode, setMapMode] = useState<'2d_gis' | '3d_dem'>('2d_gis');
 
   // Active Map Focus Coordinates
   const [currentLat, setCurrentLat] = useState<number>(DEFAULT_MAP_LOCATION.latitude);
@@ -93,7 +96,7 @@ export const MapPage: React.FC = () => {
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#0284c7]/10 border border-[#0284c7]/20 text-[#0284c7] text-xs font-mono font-semibold uppercase tracking-wider mb-2">
             <Compass className="w-3.5 h-3.5" />
-            Spatial GIS Intelligence
+            <span>3D Spatial &amp; GIS Intelligence</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-[#0f172a] tracking-tight">
             {t('map.title', 'GIS Spatial Map')}
@@ -104,6 +107,34 @@ export const MapPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* 3D vs 2D Toggle */}
+          <div className="flex items-center rounded-xl bg-white p-1 border border-[#cbd5e1] text-xs font-mono font-bold shadow-xs">
+            <button
+              type="button"
+              onClick={() => setMapMode('2d_gis')}
+              className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 ${
+                mapMode === '2d_gis' 
+                  ? 'bg-[#0284c7] text-white shadow-xs' 
+                  : 'text-[#64748b] hover:text-[#0f172a]'
+              }`}
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              <span>2D GIS Map</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMapMode('3d_dem')}
+              className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 ${
+                mapMode === '3d_dem' 
+                  ? 'bg-[#0284c7] text-white shadow-xs' 
+                  : 'text-[#64748b] hover:text-[#0f172a]'
+              }`}
+            >
+              <Boxes className="w-3.5 h-3.5" />
+              <span>3D DEM Mesh</span>
+            </button>
+          </div>
+
           <Link
             to="/chat"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-[#f1f5f9] text-[#0284c7] border border-[#cbd5e1] text-xs font-bold transition shadow-xs cursor-pointer"
@@ -114,7 +145,7 @@ export const MapPage: React.FC = () => {
 
           <Link
             to="/submit"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold transition shadow-md shadow-sky-500/20 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl btn-3d-primary text-white text-xs font-bold transition shadow-md shadow-sky-500/20 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>+ Upload Evidence</span>
@@ -123,7 +154,7 @@ export const MapPage: React.FC = () => {
       </div>
 
       {/* Prominent Quick-Location Region Chips */}
-      <div className="p-4 rounded-2xl bg-white border border-[#e2e8f0] shadow-sm space-y-3">
+      <div className="p-4 rounded-2xl bg-white border border-[#cbd5e1] shadow-sm space-y-3 card-3d-realistic">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <span className="text-xs font-mono font-bold text-[#64748b] uppercase tracking-wider flex items-center gap-1.5">
             <MapPin className="w-3.5 h-3.5 text-[#0284c7]" />
@@ -154,35 +185,44 @@ export const MapPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Map Workspace (9 cols Map + 3 cols Case Dossiers) */}
+      {/* Main Map Workspace (8 cols Map + 4 cols Case Dossiers) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         
-        {/* Leaflet Map Interactive Viewport (8 cols) */}
+        {/* Leaflet Map Interactive Viewport / 3D DEM (8 cols) */}
         <div className="lg:col-span-8 space-y-3">
-          <div className="rounded-3xl overflow-hidden border border-[#e2e8f0] shadow-md bg-white">
-            <EvidenceMap
-              latitude={currentLat}
-              longitude={currentLng}
-              address={currentAddress}
-              height="580px"
-              showSearch={true}
-              interactive={true}
-              markers={mapMarkers}
-              onMarkerClick={(m) => {
-                setCurrentLat(m.latitude);
-                setCurrentLng(m.longitude);
-                if (m.address) setCurrentAddress(m.address);
-              }}
-              onLocationSelect={(lat, lng, addr) => {
-                setCurrentLat(lat);
-                setCurrentLng(lng);
-                if (addr) setCurrentAddress(addr);
-              }}
-            />
+          <div className="rounded-3xl overflow-hidden border border-[#cbd5e1] shadow-md bg-white">
+            {mapMode === '2d_gis' ? (
+              <EvidenceMap
+                latitude={currentLat}
+                longitude={currentLng}
+                address={currentAddress}
+                height="580px"
+                showSearch={true}
+                interactive={true}
+                markers={mapMarkers}
+                onMarkerClick={(m) => {
+                  setCurrentLat(m.latitude);
+                  setCurrentLng(m.longitude);
+                  if (m.address) setCurrentAddress(m.address);
+                }}
+                onLocationSelect={(lat, lng, addr) => {
+                  setCurrentLat(lat);
+                  setCurrentLng(lng);
+                  if (addr) setCurrentAddress(addr);
+                }}
+              />
+            ) : (
+              <RealisticTerrainViewer 
+                locationName={currentAddress}
+                latitude={currentLat}
+                longitude={currentLng}
+                height="580px"
+              />
+            )}
           </div>
 
           {/* Map Telemetry Strip */}
-          <div className="p-3.5 rounded-2xl bg-white border border-[#e2e8f0] flex flex-wrap items-center justify-between gap-3 text-xs font-mono shadow-xs">
+          <div className="p-3.5 rounded-2xl bg-white border border-[#cbd5e1] flex flex-wrap items-center justify-between gap-3 text-xs font-mono shadow-xs card-3d-realistic">
             <div className="flex items-center gap-2">
               <span className="text-[#64748b] uppercase font-bold">LOCKED COORDINATES:</span>
               <span className="text-[#0284c7] font-bold">
@@ -190,15 +230,15 @@ export const MapPage: React.FC = () => {
               </span>
             </div>
             <div className="flex items-center gap-3 text-[#64748b]">
-              <span>CartoDB Voyager Light GIS</span>
+              <span>{mapMode === '2d_gis' ? 'CartoDB Voyager Light GIS' : 'Three.js Realistic 3D DEM'}</span>
               <span>&bull;</span>
-              <span>Open-Meteo Synced</span>
+              <span className="text-[#10b981] font-bold">60 FPS Real-time</span>
             </div>
           </div>
         </div>
 
         {/* Evidence Dossiers on Map (4 cols) */}
-        <div className="lg:col-span-4 p-5 rounded-3xl bg-white border border-[#e2e8f0] space-y-4 shadow-sm">
+        <div className="lg:col-span-4 p-5 rounded-3xl bg-white border border-[#cbd5e1] space-y-4 shadow-sm card-3d-realistic">
           <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-3">
             <div className="flex items-center gap-2">
               <Layers className="w-4 h-4 text-[#0284c7]" />
@@ -224,7 +264,7 @@ export const MapPage: React.FC = () => {
               </p>
               <Link
                 to="/submit"
-                className="inline-block mt-2 px-3 py-1.5 rounded-xl bg-[#0284c7] text-white font-bold text-xs"
+                className="inline-block mt-2 px-4 py-2 rounded-xl btn-3d-primary text-white font-bold text-xs"
               >
                 + Upload Evidence
               </Link>
@@ -253,7 +293,7 @@ export const MapPage: React.FC = () => {
                       <img
                         src={r.primaryImageUrl}
                         alt={r.title}
-                        className="w-12 h-12 rounded-xl object-cover border border-[#cbd5e1] shrink-0 bg-white"
+                        className="w-12 h-12 rounded-xl object-cover border border-[#cbd5e1] shrink-0 bg-white shadow-xs"
                       />
                       <div className="truncate flex-1">
                         <div className="text-xs font-bold text-[#0f172a] truncate font-sans">

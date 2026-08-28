@@ -4,6 +4,7 @@ import { Sidebar } from './Sidebar';
 import { TopCommandBar } from './TopCommandBar';
 import { Bot, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { RealisticWaterCanvas } from '../3d/RealisticWaterCanvas';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -21,8 +22,11 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-environmental-pattern text-[#0f172a] font-sans antialiased">
+    <div className="relative flex h-screen w-screen overflow-hidden bg-environmental-pattern text-[#0f172a] font-sans antialiased">
       
+      {/* 3D Ambient Fluid & Atmospheric Droplet Canvas */}
+      <RealisticWaterCanvas />
+
       {/* Desktop Navigation Sidebar */}
       <div className="hidden lg:block w-64 h-full shrink-0 z-20">
         <Sidebar />
@@ -42,7 +46,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       )}
 
       {/* Main App Workspace */}
-      <div className="flex flex-col flex-1 h-full overflow-hidden min-w-0">
+      <div className="relative flex flex-col flex-1 h-full overflow-hidden min-w-0 z-10">
         
         {/* Top Command Bar */}
         <TopCommandBar 
@@ -57,12 +61,12 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
       </div>
 
-      {/* Floating 🤖 FLOODPRINT AI Trigger on All Views (except /chat) */}
+      {/* Floating 3D 🤖 FLOODPRINT AI Trigger on All Views (except /chat) */}
       {location.pathname !== '/chat' && (
         <div className="fixed bottom-6 right-6 z-40">
           <Link
             to="/chat"
-            className="group flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-[#0284c7] hover:bg-[#0369a1] text-white shadow-xl shadow-sky-500/25 hover:shadow-sky-500/40 transition-all duration-200 active:scale-95 border border-white/20"
+            className="group flex items-center gap-2.5 px-4 py-3 rounded-2xl btn-3d-primary text-white shadow-xl shadow-sky-500/30 hover:shadow-sky-500/50 transition-all duration-200 active:scale-95 border border-white/30"
             title="Open Floodprint AI Assistant"
           >
             <div className="relative">
