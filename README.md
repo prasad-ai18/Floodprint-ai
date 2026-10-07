@@ -1,5 +1,7 @@
 # Floodprint AI — Multi-Signal Disaster Evidence Verification Platform
 
+web URL: https://floodprint-ai.vercel.app/
+
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19.0-cyan.svg)](https://react.dev/)
 [![Gemini](https://img.shields.io/badge/Gemini%20AI-1.5%20Flash-indigo.svg)](https://deepmind.google/technologies/gemini/)
